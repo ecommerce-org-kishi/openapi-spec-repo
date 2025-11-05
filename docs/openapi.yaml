@@ -324,7 +324,7 @@ components:
           format: date-time
 
     # -------------------------
-    # 決済・配送関連
+    # 決済・配送
     # -------------------------
     PaymentRequest:
       type: object
