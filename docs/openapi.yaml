@@ -36,7 +36,7 @@ paths:
     post:
       tags: [Users]
       summary: 新規ユーザー登録
-      description: 新しいユーザーアカウントを作成する
+      description: 新しいユーザーアカウントを作成
       requestBody:
         required: true
         content:
