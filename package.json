@@ -1,0 +1,19 @@
+{
+  "name": "openapi-spec-repo",
+  "version": "1.0.0",
+  "description": "\"# openapi-spec-repo\"",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "redoc-cli": "^0.13.21",
+    "swagger-cli": "^4.0.4"
+  }
+}
