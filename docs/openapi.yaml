@@ -3,7 +3,7 @@ info:
   title: E-Commerce API
   description: >
     大規模ECサイト向けAPI仕様書テンプレート  
-    （Spring Boot + Swagger UI対応版）
+    （Spring Boot + SwaggerUI対応版）
   version: 1.0.0
   contact:
     name: API Maintainer
