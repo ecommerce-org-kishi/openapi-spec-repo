@@ -19,7 +19,7 @@ tags:
   - name: Users
     description: ユーザー登録・認証
   - name: Products
-    description: 商品・バリエーション
+    description: 商品・バリエーション関連
   - name: Orders
     description: 注文・注文詳細
   - name: Payments
