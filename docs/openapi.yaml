@@ -1,0 +1,367 @@
+openapi: 3.0.3
+info:
+  title: E-Commerce API
+  description: >
+    大規模ECサイト向けAPI仕様書テンプレート  
+    （Spring Boot + Swagger UI対応版）
+  version: 1.0.0
+  contact:
+    name: API Maintainer
+    email: dev-team@example.com
+
+servers:
+  - url: https://api.example.com/api/v1
+    description: Production
+  - url: http://localhost:8080/api/v1
+    description: Local Development
+
+tags:
+  - name: Users
+    description: ユーザー登録・認証
+  - name: Products
+    description: 商品・バリエーション関連
+  - name: Orders
+    description: 注文・注文詳細
+  - name: Payments
+    description: 決済処理
+  - name: Shipments
+    description: 配送・出荷処理
+  - name: Categories
+    description: 商品カテゴリ管理
+  - name: Stock
+    description: 在庫・入出庫履歴
+
+paths:
+  /users/register:
+    post:
+      tags: [Users]
+      summary: 新規ユーザー登録
+      description: 新しいユーザーアカウントを作成する
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserRegisterRequest"
+      responses:
+        "201":
+          description: ユーザー登録成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+        "400":
+          description: 無効な入力
+
+  /users/login:
+    post:
+      tags: [Users]
+      summary: ログイン
+      description: メールアドレスとパスワードで認証し、JWTトークンを返す
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: ログイン成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+        "401":
+          description: 認証失敗
+
+  /products:
+    get:
+      tags: [Products]
+      summary: 商品一覧取得
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: string
+          description: カテゴリフィルタ
+        - name: keyword
+          in: query
+          schema:
+            type: string
+          description: 検索キーワード
+      responses:
+        "200":
+          description: 商品一覧
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ProductResponse"
+
+    post:
+      tags: [Products]
+      summary: 商品登録
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductRequest"
+      responses:
+        "201":
+          description: 登録成功
+
+  /products/{product_id}:
+    get:
+      tags: [Products]
+      summary: 商品詳細取得
+      parameters:
+        - name: product_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: 商品情報
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductResponse"
+        "404":
+          description: 商品が見つからない
+
+  /orders:
+    post:
+      tags: [Orders]
+      summary: 注文作成
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderRequest"
+      responses:
+        "201":
+          description: 注文作成成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderResponse"
+
+    get:
+      tags: [Orders]
+      summary: 注文一覧取得
+      responses:
+        "200":
+          description: 注文履歴
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/OrderResponse"
+
+  /payments:
+    post:
+      tags: [Payments]
+      summary: 決済実行
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PaymentRequest"
+      responses:
+        "200":
+          description: 決済成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentResponse"
+        "400":
+          description: 決済エラー
+
+  /shipments/{order_id}:
+    get:
+      tags: [Shipments]
+      summary: 配送状況取得
+      parameters:
+        - name: order_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: 配送情報
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ShipmentResponse"
+
+components:
+  schemas:
+    # -------------------------
+    # ユーザー関連
+    # -------------------------
+    UserRegisterRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+        full_name:
+          type: string
+      required: [email, password, full_name]
+
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          description: JWTトークン
+        expires_in:
+          type: integer
+          description: 有効期限（秒）
+
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        full_name:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+
+    # -------------------------
+    # 商品関連
+    # -------------------------
+    ProductRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+          format: float
+        stock:
+          type: integer
+        category_id:
+          type: integer
+      required: [name, price, stock]
+
+    ProductResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        stock:
+          type: integer
+        category:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+
+    # -------------------------
+    # 注文関連
+    # -------------------------
+    OrderRequest:
+      type: object
+      properties:
+        user_id:
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderItemRequest"
+        address_id:
+          type: integer
+      required: [user_id, items, address_id]
+
+    OrderItemRequest:
+      type: object
+      properties:
+        product_id:
+          type: integer
+        quantity:
+          type: integer
+
+    OrderResponse:
+      type: object
+      properties:
+        order_id:
+          type: integer
+        status:
+          type: string
+          enum: [pending, paid, shipped, delivered, cancelled]
+        total_price:
+          type: number
+        created_at:
+          type: string
+          format: date-time
+
+    # -------------------------
+    # 決済・配送関連
+    # -------------------------
+    PaymentRequest:
+      type: object
+      properties:
+        order_id:
+          type: integer
+        amount:
+          type: number
+        provider:
+          type: string
+          enum: [stripe, paypal, mock]
+      required: [order_id, amount]
+
+    PaymentResponse:
+      type: object
+      properties:
+        payment_id:
+          type: integer
+        status:
+          type: string
+          enum: [authorized, captured, failed, refunded]
+        created_at:
+          type: string
+          format: date-time
+
+    ShipmentResponse:
+      type: object
+      properties:
+        shipment_id:
+          type: integer
+        carrier:
+          type: string
+        tracking_no:
+          type: string
+        status:
+          type: string
+          enum: [preparing, in_transit, delivered, returned]
+        updated_at:
+          type: string
+          format: date-time
