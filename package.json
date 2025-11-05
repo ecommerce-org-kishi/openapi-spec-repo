@@ -1,16 +1,22 @@
 {
   "name": "openapi-spec-repo",
   "version": "1.0.0",
-  "description": "\"# openapi-spec-repo\"",
+  "description": "E-Commerce OpenAPI specification and CI/CD pipeline",
   "main": "index.js",
   "directories": {
     "doc": "docs"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "validate": "swagger-cli validate docs/openapi.yaml",
+    "build": "redoc-cli bundle docs/openapi.yaml -o dist/index.html"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "OpenAPI",
+    "Redoc",
+    "Swagger",
+    "E-Commerce"
+  ],
+  "author": "Kishi Dev Team",
   "license": "ISC",
   "devDependencies": {
     "redoc-cli": "^0.13.21",
